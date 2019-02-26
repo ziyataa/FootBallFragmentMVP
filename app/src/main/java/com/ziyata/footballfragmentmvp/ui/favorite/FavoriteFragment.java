@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -48,7 +52,10 @@ public class FavoriteFragment extends Fragment implements FavoriteContract.View 
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         favoritePresenter.getDataListTeams(getContext());
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -58,13 +65,6 @@ public class FavoriteFragment extends Fragment implements FavoriteContract.View 
         });
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        favoritePresenter.getDataListTeams(getContext()) ;
     }
 
     @Override
@@ -87,5 +87,28 @@ public class FavoriteFragment extends Fragment implements FavoriteContract.View 
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Memasukkan menu ke fragment
+        inflater.inflate(R.menu.search, menu);
+
+        // Membuat object
+        MenuItem searchItem = menu.findItem(R.id.search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                favoritePresenter.SearchTeams(getContext(), newText);
+                return true;
+            }
+        });
     }
 }
