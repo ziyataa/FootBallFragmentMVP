@@ -54,6 +54,7 @@ public class TeamsPresenter implements TeamsContract.Presenter {
                     view.hideProgress();
                     if (response.body() != null){
                         if (response.body().getTeams() != null){
+                            view.showDataList(response.body().getTeams());
                         }else {
                             view.showFailureMessage("Team tidak ada");
                         }
