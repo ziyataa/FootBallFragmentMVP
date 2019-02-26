@@ -40,4 +40,35 @@ public class TeamsPresenter implements TeamsContract.Presenter {
             }
         });
     }
+
+    @Override
+    public void getSearchTeams(String searchText) {
+        // Mengecek apakah inputan user ada isinya atau tidak
+        if (!searchText.isEmpty()){
+            // apabila ada lakukan request ke API
+            view.showProgress();
+            Call<TeamsResponse> call = apiInterface.getSearchTeams(searchText);
+            call.enqueue(new Callback<TeamsResponse>() {
+                @Override
+                public void onResponse(Call<TeamsResponse> call, Response<TeamsResponse> response) {
+                    view.hideProgress();
+                    if (response.body() != null){
+                        if (response.body().getTeams() != null){
+                        }else {
+                            view.showFailureMessage("Team tidak ada");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<TeamsResponse> call, Throwable t) {
+                    view.hideProgress();
+                    view.showFailureMessage(t.getMessage());
+                }
+            });
+        }else {
+            // Apabila kosong maka lakukan pengambilan data team tanpa search
+            getDataListItem();
+        }
+    }
 }

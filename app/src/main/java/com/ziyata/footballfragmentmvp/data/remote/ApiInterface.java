@@ -9,4 +9,8 @@ import retrofit2.http.Query;
 public interface ApiInterface {
     @GET("/api/v1/json/1/search_all_teams.php")
     Call<TeamsResponse> getAllTeams(@Query("s") String s, @Query("c") String c);
+
+    //  Endpoint untuk melakukan search bedasarkan nama team
+    @GET("/api/v1/json/1/searchteams.php")
+    Call<TeamsResponse> getSearchTeams(@Query("t") String t);
 }
